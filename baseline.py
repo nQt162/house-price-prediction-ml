@@ -1,3 +1,5 @@
+import os
+import joblib
 import pandas as pd 
 import numpy as np
 from sklearn.model_selection import train_test_split, GridSearchCV
@@ -46,3 +48,8 @@ print("R²   :", r2_score(y_test, y_predict))
 print("MAE  :", mean_absolute_error(y_test, y_predict))
 print("MSE  :", mean_squared_error(y_test, y_predict))
 print("RMSE :", np.sqrt(mean_squared_error(y_test, y_predict)))
+
+
+os.makedirs("./models", exist_ok=True)
+best_model = grid_search.best_estimator_
+joblib.dump(best_model, "./models/best_model.pkl")

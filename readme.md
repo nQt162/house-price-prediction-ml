@@ -31,7 +31,7 @@ Dataset gồm các đặc trưng liên quan đến nhà ở và khu vực.
 | `AveOccup`    | Số người trung bình trên mỗi hộ gia đình                            |
 | `Latitude`    | Vĩ độ của khu vực                                                   |
 | `Longitude`   | Kinh độ của khu vực                                                 |
-| `MedHouseVal` | Giá nhà trung vị – **target cần dự đoán**                           |
+| `MedHouseVal` | Giá nhà – **target cần dự đoán**                                    |
 
 ### Input
 
