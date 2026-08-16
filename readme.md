@@ -250,8 +250,7 @@ RMSE
 ```text
 house_price_prediction/
 │
-├── data/
-│   └── data_house.csv
+├── data_house.csv
 │
 ├── src/
 │   ├── data_preprocessing.py
@@ -261,10 +260,9 @@ house_price_prediction/
 ├── models/
 │   └── best_model.pkl
 │
-├── reports/
-│   └── results.csv
-│
+├── api.py
 ├── main.py
+├── .gitignore
 ├── requirements.txt
 └── README.md
 ```
