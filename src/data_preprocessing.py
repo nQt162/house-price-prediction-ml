@@ -29,7 +29,8 @@ def load_data(path):
     - Đọc CSV
     - Trả về DataFrame
     """
-    pass
+    df = pd.read_csv(path)
+    return df 
 
 
 def inspect_data(df):
@@ -42,7 +43,25 @@ def inspect_data(df):
     - duplicate
     - describe()
     """
-    pass
+    
+    print("Shape:")
+    print(df.shape)
+
+    print("\nInfo:")
+    print(df.info())
+
+    print("\nCorrelation:")
+    print(df.corr(numeric_only=True))
+
+    print("\nMissing values:")
+    print(df.isnull().sum())
+
+    print("\nDuplicates:")
+    print(df.duplicated().sum())
+
+    print("\nDescription:")
+    print(df.describe())
+   
 
 
 def split_features_target(df):
@@ -51,7 +70,11 @@ def split_features_target(df):
     x = toàn bộ feature
     y = TARGET
     """
-    pass
+    X = df.drop(columns=[TARGET])
+    y = df[TARGET]
+
+    return X, y
+   
 
 
 def create_preprocessor(x):
@@ -63,7 +86,21 @@ def create_preprocessor(x):
         StandardScaler
     - Tạo ColumnTransformer
     """
-    pass
+    # 1. Lấy các cột dữ liệu số
+    numerical_features = x.select_dtypes(include=["int64", "float64"]).columns
+
+    # 2. Tạo pipeline cho dữ liệu số
+    numerical_pipeline = Pipeline([
+        ("imputer", SimpleImputer(strategy="median")),
+        ("scaler", StandardScaler())
+    ])
+
+    # 3. Tạo ColumnTransformer
+    preprocessor = ColumnTransformer([
+        ("num", numerical_pipeline, numerical_features)
+    ])
+
+    return preprocessor
 
 
 def split_data(X, y):
@@ -73,4 +110,11 @@ def split_data(X, y):
     test_size = 0.2
     random_state = 42
     """
-    pass
+    X_train, X_test, y_train, y_test = train_test_split(
+        X,
+        y,
+        test_size=0.2,
+        random_state=4
+    )
+
+    return X_train, X_test, y_train, y_test
