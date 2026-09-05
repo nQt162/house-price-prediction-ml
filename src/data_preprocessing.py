@@ -25,52 +25,67 @@ TARGET = "MedHouseVal"
 
 def load_data(path):
     """
-    TODO:
-    - Đọc CSV
-    - Trả về DataFrame
+    Đọc CSV và trả về DataFrame
     """
-    pass
+    df = pd.read_csv(path)
+    return df
 
 
 def inspect_data(df):
     """
-    TODO:
-    - df.shape
-    - df.info()
-    - df.corr()
-    - missing values
-    - duplicate
-    - describe()
+    Khám phá dữ liệu: shape, info, corr, missing, duplicate, describe
     """
-    pass
+    print("=" * 40)
+    print("SHAPE:", df.shape)
+    print("=" * 40)
+    df.info()
+    print("=" * 40)
+    print("MISSING VALUES:")
+    print(df.isnull().sum())
+    print("=" * 40)
+    print("DUPLICATES:", df.duplicated().sum())
+    print("=" * 40)
+    print("DESCRIBE:")
+    print(df.describe())
+    print("=" * 40)
+    print("CORRELATION:")
+    print(df.corr())
+    print("=" * 40)
 
 
 def split_features_target(df):
     """
-    TODO:
-    x = toàn bộ feature
-    y = TARGET
+    X = toàn bộ feature, y = TARGET
     """
-    pass
+    X = df.drop(TARGET, axis=1)
+    y = df[TARGET]
+    return X, y
 
 
 def create_preprocessor(x):
     """
-    TODO:
-    - Xác định numerical features
-    - Tạo Pipeline:
-        SimpleImputer
-        StandardScaler
-    - Tạo ColumnTransformer
+    Pipeline: SimpleImputer(median) + StandardScaler
+    bọc trong ColumnTransformer cho numerical features
     """
-    pass
+    num_features = list(x.select_dtypes(include="number").columns)
+
+    num_transformer = Pipeline([
+        ("imputer", SimpleImputer(strategy="median")),
+        ("scaler", StandardScaler())
+    ])
+
+    preprocessor = ColumnTransformer([
+        ("num_feature", num_transformer, num_features)
+    ])
+
+    return preprocessor
 
 
 def split_data(X, y):
     """
-    TODO:
-    train_test_split
-    test_size = 0.2
-    random_state = 42
+    train_test_split với test_size=0.2, random_state=42
     """
-    pass
+    X_train, X_test, y_train, y_test = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
+    return X_train, X_test, y_train, y_test

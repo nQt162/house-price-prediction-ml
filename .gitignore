@@ -1,1 +1,31 @@
-models/best_model.pkl
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.venv/
+env/
+
+# VS Code
+.vscode/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Environment variables
+.env
+
+# Trained models
+models/
+*.pkl
+
+# Logs
+*.log

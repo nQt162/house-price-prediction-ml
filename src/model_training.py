@@ -1,48 +1,71 @@
 '''
 Nhiệm vụ:
-  Predict test set
-  Tính metric
-  Phân tích kết quả
-  Có thể vẽ biểu đồ
+  Tạo model
+  Tạo Pipeline
+  Xây dựng param_grid
+  GridSearchCV
+  Train
+  Lưu best model
 '''
-import numpy as np
-from sklearn.metrics import  r2_score,  mean_absolute_error, mean_squared_error
+import os
+import joblib
+from sklearn.pipeline import Pipeline
+from sklearn.ensemble import RandomForestRegressor
+from sklearn.model_selection import GridSearchCV
 
 
-def predict(model, X_test):
+def create_model(preprocessor):
     """
-    TODO:
-    model.predict(X_test)
+    Tạo RandomForestRegressor và bọc vào Pipeline
     """
-    pass
+    model = RandomForestRegressor(random_state=42, n_jobs=-1)
+
+    pipeline = Pipeline([
+        ("preprocessor", preprocessor),
+        ("model", model)
+    ])
+
+    return pipeline
 
 
-def evaluate_model(y_test, y_predict):
+def create_param_grid():
     """
-    TODO:
-    Tính:
-
-    R²
-    MAE
-    MSE
-    RMSE
-
-    Trả về dictionary
+    Xây dựng param_grid (prefix model__ vì model nằm trong Pipeline)
     """
-    pass
+    param_grid = {
+        "model__n_estimators": [100, 200, 300],
+        "model__criterion": ["squared_error", "absolute_error", "poisson"],
+        "model__max_depth": [None, 10, 20],
+        "model__min_samples_split": [2, 5],
+        "model__min_samples_leaf": [1, 2]
+    }
+    return param_grid
 
 
-def print_metrics(metrics):
+def train_model(pipeline, param_grid, X_train, y_train):
     """
-    TODO:
-    In kết quả đẹp
+    GridSearchCV: cv=4, scoring=r2, n_jobs=-1, fit, trả về best estimator
     """
-    pass
+    grid_search = GridSearchCV(
+        estimator=pipeline,
+        param_grid=param_grid,
+        cv=4,
+        scoring="r2",
+        n_jobs=-1,
+        verbose=2
+    )
+    grid_search.fit(X_train, y_train)
+
+    print("Best params:", grid_search.best_params_)
+    print("Best CV R²  :", grid_search.best_score_)
+
+    return grid_search.best_estimator_
 
 
-def save_results(metrics, path):
+def save_model(model, path):
     """
-    TODO:
-    Lưu kết quả vào CSV
+    Dùng joblib để lưu model (tạo thư mục nếu chưa có)
     """
-    pass
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    joblib.dump(model, path)
+    print("Model đã lưu tại:", path)

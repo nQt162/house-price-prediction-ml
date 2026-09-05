@@ -1,62 +1,55 @@
 '''
 Nhiệm vụ:
-  Tạo model
-  Tạo Pipeline
-  Xây dựng param_grid
-  GridSearchCV
-  Train
-  Lưu best model
+  Predict test set
+  Tính metric
+  Phân tích kết quả
+  Có thể vẽ biểu đồ
 '''
-from sklearn.pipeline import Pipeline
-from sklearn.ensemble import RandomForestRegressor
-from sklearn.model_selection import GridSearchCV
+import numpy as np
+import pandas as pd
+from sklearn.metrics import  r2_score,  mean_absolute_error, mean_squared_error
 
 
-def create_model(preprocessor):
+def predict(model, X_test):
     """
-    TODO:
-    Tạo RandomForestRegressor
-
-    random_state=42
-    n_jobs=-1
-
-    Sau đó tạo Pipeline:
-        preprocessor
-        model
+    Dự đoán trên tập test
     """
-    pass
+    y_predict = model.predict(X_test)
+    return y_predict
 
 
-def create_param_grid():
+def evaluate_model(y_test, y_predict):
     """
-    TODO:
-    Xây dựng param_grid
-
-    Ví dụ:
-        n_estimators
-        criterion
-        max_depth
-        min_samples_split
-        min_samples_leaf
+    Tính R², MAE, MSE, RMSE — trả về dictionary
     """
-    pass
+    mse = mean_squared_error(y_test, y_predict)
 
+    metrics = {
+        "R2": r2_score(y_test, y_predict),
+        "MAE": mean_absolute_error(y_test, y_predict),
+        "MSE": mse,
+        "RMSE": np.sqrt(mse)
+    }
 
-def train_model(pipeline, param_grid, X_train, y_train):
-    """
-    TODO:
-    - GridSearchCV
-    - cv=4
-    - scoring="r2"
-    - n_jobs=-1
-    - fit()
-    """
-    pass
+    return metrics
 
 
-def save_model(model, path):
+def print_metrics(metrics):
     """
-    TODO:
-    Dùng joblib để lưu model
+    In kết quả đẹp
     """
-    pass
+    print("=" * 40)
+    print("KẾT QUẢ ĐÁNH GIÁ MODEL")
+    print("=" * 40)
+    for name, value in metrics.items():
+        print(f"{name:<6}: {value:.4f}")
+    print("=" * 40)
+
+
+def save_results(metrics, path):
+    """
+    Lưu kết quả vào CSV
+    """
+    df_metrics = pd.DataFrame([metrics])
+    df_metrics.to_csv(path, index=False)
+    print("Kết quả đã lưu tại:", path)
