@@ -25,79 +25,66 @@ TARGET = "MedHouseVal"
 
 def load_data(path):
     """
-    TODO:
-    - Đọc CSV
-    - Trả về DataFrame
+    Đọc CSV và trả về DataFrame
     """
     df = pd.read_csv(path)
-    return df 
+    return df
 
 
 def inspect_data(df):
     """
-    TODO:
-    - df.shape
-    - df.info()
-    - df.corr()
-    - missing values
-    - duplicate
-    - describe()
+    Khám phá dữ liệu: shape, info, corr, missing, duplicate, describe
     """
-    
-    print("Shape:")
-    print(df.shape)
+    print("=" * 40)
+    print("SHAPE:", df.shape)
+    print("=" * 40)
 
-    print("\nInfo:")
-    print(df.info())
+    df.info()
 
-    print("\nCorrelation:")
-    print(df.corr(numeric_only=True))
-
-    print("\nMissing values:")
+    print("=" * 40)
+    print("MISSING VALUES:")
     print(df.isnull().sum())
 
-    print("\nDuplicates:")
-    print(df.duplicated().sum())
+    print("=" * 40)
+    print("DUPLICATES:", df.duplicated().sum())
 
-    print("\nDescription:")
+    print("=" * 40)
+    print("DESCRIBE:")
     print(df.describe())
-   
+
+    print("=" * 40)
+    print("CORRELATION:")
+    print(df.corr(numeric_only=True))
+
+    print("=" * 40)
 
 
 def split_features_target(df):
     """
-    TODO:
-    x = toàn bộ feature
-    y = TARGET
+    X = toàn bộ feature, y = TARGET
     """
     X = df.drop(columns=[TARGET])
     y = df[TARGET]
 
     return X, y
-   
 
 
 def create_preprocessor(x):
     """
-    TODO:
-    - Xác định numerical features
-    - Tạo Pipeline:
-        SimpleImputer
-        StandardScaler
-    - Tạo ColumnTransformer
+    Pipeline: SimpleImputer(median) + StandardScaler
+    bọc trong ColumnTransformer cho numerical features
     """
-    # 1. Lấy các cột dữ liệu số
-    numerical_features = x.select_dtypes(include=["int64", "float64"]).columns
+    num_features = list(
+        x.select_dtypes(include="number").columns
+    )
 
-    # 2. Tạo pipeline cho dữ liệu số
-    numerical_pipeline = Pipeline([
+    num_transformer = Pipeline([
         ("imputer", SimpleImputer(strategy="median")),
         ("scaler", StandardScaler())
     ])
 
-    # 3. Tạo ColumnTransformer
     preprocessor = ColumnTransformer([
-        ("num", numerical_pipeline, numerical_features)
+        ("num_feature", num_transformer, num_features)
     ])
 
     return preprocessor
@@ -105,16 +92,12 @@ def create_preprocessor(x):
 
 def split_data(X, y):
     """
-    TODO:
-    train_test_split
-    test_size = 0.2
-    random_state = 42
+    train_test_split với test_size=0.2, random_state=42
     """
     X_train, X_test, y_train, y_test = train_test_split(
-        X,
-        y,
+        X, y,
         test_size=0.2,
-        random_state=4
+        random_state=42
     )
 
     return X_train, X_test, y_train, y_test
